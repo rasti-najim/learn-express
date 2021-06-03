@@ -1,7 +1,16 @@
 const Joi = require("joi");
 const express = require("express");
+const logger = require("./logger");
 const app = express();
 app.use(express.json());
+
+// custom middleware
+app.use(logger);
+
+app.use(function (req, res, next) {
+  console.log("Authenticating...");
+  next();
+});
 
 // instead of a database
 const users = [
