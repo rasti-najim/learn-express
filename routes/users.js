@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const express = require("express");
+const auth = require("../middleware/auth");
 // we get the router
 const router = express.Router();
 
@@ -15,7 +16,13 @@ router.get("/", (req, res) => {
   res.send(users);
 });
 
-// getting a single user
+// * getting the current user (secure/authorized)
+router.get("/me", auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password"); // mongoose code
+  res.send(user);
+});
+
+// getting a single user (insecure/unauthorized)
 router.get("/:id", (req, res) => {
   const user = users.find((user) => user.id === parseInt(req.params.id));
   if (!user)
